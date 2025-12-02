@@ -1,0 +1,6 @@
+@EvergreenWebAPI_HostAddress = http://localhost:5074
+
+GET {{EvergreenWebAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
