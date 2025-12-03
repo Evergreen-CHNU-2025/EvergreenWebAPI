@@ -46,8 +46,6 @@ public partial class ApplicationDbContext : DbContext
 
             entity.HasIndex(e => e.NameUa, "flowers_name_ua_key").IsUnique();
 
-            entity.HasIndex(e => e.Symbolics, "flowers_symbolics_key").IsUnique();
-
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("gen_random_uuid()")
                 .HasColumnName("id");
