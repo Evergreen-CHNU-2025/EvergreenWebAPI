@@ -1,6 +1,6 @@
-﻿namespace EvergreenWebAPI.Models;
+﻿namespace EvergreenWebAPI.DTOs;
 
-public partial class Flower
+public class FlowerInfoDTO
 {
     public Guid Id { get; set; }
 
@@ -18,9 +18,5 @@ public partial class Flower
 
     public string InspectRecomendations { get; set; } = null!;
 
-    public virtual ICollection<FlowersHexColor> FlowersHexColors { get; set; } = new List<FlowersHexColor>();
-
-    public virtual ICollection<TipsFlower> TipsFlowers { get; set; } = new List<TipsFlower>();
-
-    public virtual ICollection<UserFavoriteFlower> UserFavoriteFlowers { get; set; } = new List<UserFavoriteFlower>();
+    public string[] Colors { get; set; } = null!;
 }

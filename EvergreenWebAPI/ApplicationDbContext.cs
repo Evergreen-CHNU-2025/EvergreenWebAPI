@@ -5,8 +5,6 @@ namespace EvergreenWebAPI;
 
 public partial class ApplicationDbContext : DbContext
 {
-    #region Constructors
-
     public ApplicationDbContext()
     {
     }
@@ -16,11 +14,11 @@ public partial class ApplicationDbContext : DbContext
     {
     }
 
-    #endregion
-
-    #region Properties
-
     public virtual DbSet<Flower> Flowers { get; set; }
+
+    public virtual DbSet<FlowersHexColor> FlowersHexColors { get; set; }
+
+    public virtual DbSet<HexColor> HexColors { get; set; }
 
     public virtual DbSet<Tip> Tips { get; set; }
 
@@ -29,10 +27,6 @@ public partial class ApplicationDbContext : DbContext
     public virtual DbSet<User> Users { get; set; }
 
     public virtual DbSet<UserFavoriteFlower> UserFavoriteFlowers { get; set; }
-
-    #endregion
-
-    #region Private logic
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -67,6 +61,46 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.Symbolics)
                 .HasMaxLength(500)
                 .HasColumnName("symbolics");
+            entity.Property(e => e.InspectRecomendations)
+            .HasMaxLength(1000)
+            .HasColumnName("inspection_recomendations");
+        });
+
+        modelBuilder.Entity<FlowersHexColor>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("flowers_hex_colors_pkey");
+
+            entity.ToTable("flowers_hex_colors");
+
+            entity.Property(e => e.Id)
+                .HasDefaultValueSql("gen_random_uuid()")
+                .HasColumnName("id");
+            entity.Property(e => e.ColorId).HasColumnName("color_id");
+            entity.Property(e => e.FlowerId).HasColumnName("flower_id");
+
+            entity.HasOne(d => d.Color).WithMany(p => p.FlowersHexColors)
+                .HasForeignKey(d => d.ColorId)
+                .HasConstraintName("flowers_hex_colors_color_id_fkey");
+
+            entity.HasOne(d => d.Flower).WithMany(p => p.FlowersHexColors)
+                .HasForeignKey(d => d.FlowerId)
+                .HasConstraintName("flowers_hex_colors_flower_id_fkey");
+        });
+
+        modelBuilder.Entity<HexColor>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("hex_colors_pkey");
+
+            entity.ToTable("hex_colors");
+
+            entity.HasIndex(e => e.Color, "hex_colors_color_key").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasDefaultValueSql("gen_random_uuid()")
+                .HasColumnName("id");
+            entity.Property(e => e.Color)
+                .HasMaxLength(7)
+                .HasColumnName("color");
         });
 
         modelBuilder.Entity<Tip>(entity =>
@@ -156,6 +190,4 @@ public partial class ApplicationDbContext : DbContext
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
-
-    #endregion
 }
